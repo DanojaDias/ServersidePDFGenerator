@@ -1,6 +1,5 @@
-/**
- * Created by danoja on 1/5/17.
- */
+package org.wso2.analytics.is.common.pdf;
+
 public class Column {
     private String name;
     private float width;

@@ -1,3 +1,4 @@
+package org.wso2.analytics.is.common.pdf;
 import org.apache.pdfbox.pdmodel.font.PDFont;
 
 import java.util.List;

@@ -1,8 +1,7 @@
+package org.wso2.analytics.is.common.pdf;
 import org.apache.pdfbox.pdmodel.font.PDFont;
 
-/**
- * Created by danoja on 1/5/17.
- */
+
 public class Header extends PDF {
     //Logo Attributes
     private String logoPath;

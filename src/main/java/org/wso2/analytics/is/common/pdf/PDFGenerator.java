@@ -1,3 +1,5 @@
+package org.wso2.analytics.is.common.pdf;
+
 import org.apache.pdfbox.exceptions.COSVisitorException;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.PDPage;
@@ -11,9 +13,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Created by danoja on 1/5/17.
- */
 public class PDFGenerator {
 
     private PDDocument doc = null;

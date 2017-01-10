@@ -1,8 +1,6 @@
+package org.wso2.analytics.is.common.pdf;
 import org.apache.pdfbox.pdmodel.common.PDRectangle;
 
-/**
- * Created by danoja on 1/5/17.
- */
 public class PDF {
 
     protected float margin;

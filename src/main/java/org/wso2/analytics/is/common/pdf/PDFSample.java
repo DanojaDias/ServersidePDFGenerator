@@ -1,3 +1,4 @@
+package org.wso2.analytics.is.common.pdf;
 import org.apache.pdfbox.exceptions.COSVisitorException;
 import org.apache.pdfbox.pdmodel.PDPage;
 import org.apache.pdfbox.pdmodel.common.PDRectangle;
