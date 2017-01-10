@@ -8,9 +8,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Created by danoja on 1/5/17.
- */
 public class PDFSample {
 
     //PDF configuration
@@ -31,7 +28,7 @@ public class PDFSample {
     private static final String TITLE = "ABNORMAL LONG SESSION ALERTS";
     private static final float TITLE_FONT_SIZE = 15;
     private static final PDFont TITLE_FONT = PDType1Font.HELVETICA_BOLD;
-    static float titleHeight = TITLE_FONT.getFontDescriptor().getFontBoundingBox().getHeight() / 1000 * TITLE_FONT_SIZE;
+    private static float titleHeight = TITLE_FONT.getFontDescriptor().getFontBoundingBox().getHeight() / 1000 * TITLE_FONT_SIZE;
     private static final float [] TITLE_COORDINATES ={(PAGE_SIZE.getWidth() - getTitleWidth()) / 2, PAGE_SIZE.getHeight() - LOGO_COORDINATES[1] - 3*titleHeight};
 
     //PDF HeaderInfo Configurations
@@ -86,16 +83,16 @@ public class PDFSample {
         columns.add(new Column("LastName", 90  + TABLE_LINE_WIDTH));
         columns.add(new Column("Email", 100  + TABLE_LINE_WIDTH));
         columns.add(new Column("ZipCode", 90  + TABLE_LINE_WIDTH));
-        columns.add(new Column("MailOptInnnnnnnnnnnnnnn World12345", 65  + TABLE_LINE_WIDTH));
+        columns.add(new Column("MailOptIn123456789 World12345", 65  + TABLE_LINE_WIDTH));
         columns.add(new Column("Code", 60  + TABLE_LINE_WIDTH));
         columns.add(new Column("Branch", 60  + TABLE_LINE_WIDTH));
         columns.add(new Column("Product", 90  + TABLE_LINE_WIDTH));
-        columns.add(new Column("Date aaaaa oiahd123456", 100 + TABLE_LINE_WIDTH));
+        columns.add(new Column("Date 12345 123456", 100 + TABLE_LINE_WIDTH));
 
 
         String[][] content = {
-                { "1", "LastNameeeeeeeeeeeeeee", "fakemail@mock.com", "12345", "yes", "XH4234FSD", "4334", "yFone 5 XS", "31/05/2013 07:15 am" },
-                { "2", "LastName", "fakemail@mock.com", "12345", "yes", "XH4234FSDDDDD", "4334", "yFone 5 XS", "31/05/2013 07:15 am"},
+                { "1", "LastName 123456789", "fakemail@mock.com", "12345", "yes", "XH4234FSD", "4334", "yFone 5 XS", "31/05/2013 07:15 am" },
+                { "2", "LastName", "fakemail@mock.com", "12345", "yes", "XH4234FSD12345", "4334", "yFone 5 XS", "31/05/2013 07:15 am"},
                 { "3", "LastName", "fakemail@mock.com", "12345", "yes", "XH4234FSD", "4334", "yFone 5 XS", "31/05/2013 07:15 am" },
                 { "4", "LastName", "fakemail@mock.com", "12345", "yes", "XH4234FSD", "4334", "yFone 5 XS", "31/05/2013 07:15 am"},
                 { "FirstName5", "LastName", "fakemail@mock.com", "12345", "yes", "XH4234FSD", "4334", "yFone 5 XS", "31/05/2013 07:15 am" },
