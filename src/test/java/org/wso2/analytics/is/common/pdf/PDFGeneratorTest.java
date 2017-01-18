@@ -5,7 +5,10 @@ import org.apache.pdfbox.pdmodel.common.PDRectangle;
 import org.apache.pdfbox.pdmodel.font.PDFont;
 import org.apache.pdfbox.pdmodel.font.PDType1Font;
 
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -55,13 +58,19 @@ public class PDFSample {
     private static final int[] ALTERNATIVE_ROW_COLOR = {240, 236, 224};
     private static final int[] TABLE_BODY_FILL_COLOR = {255,255,255};
 
-
     public static void main(String[] args) throws IOException, COSVisitorException {
-        new PDFGenerator().generatePDF(createPDF(), createContent(), createHeader());
+        File file = new File("newfile.pdf");
+        if (!file.exists()) {
+            file.createNewFile();
+        }
+        try(OutputStream os = new FileOutputStream(file)) {
+            PDFGenerator pdfGenerator = new PDFGenerator();
+            pdfGenerator.generatePDF(createPDF(), createContent(), createHeader(), os);
+        }
     }
 
-    private static PDF createPDF() {
-        PDF pdf = new PDF();
+    private static PDFPageInfo createPDF() {
+        PDFPageInfo pdf = new PDFPageInfo();
         pdf.setMargin(MARGIN);
         pdf.setPageSize(PAGE_SIZE);
         return pdf;
