@@ -1,33 +1,28 @@
 package org.wso2.analytics.is.common.pdf;
-import org.apache.pdfbox.pdmodel.font.PDFont;
+import org.pdfbox.pdmodel.font.PDFont;
+import org.pdfbox.pdmodel.font.PDType1Font;
+
+import java.io.IOException;
 
 
-public class Header extends PDF {
+public class Header extends PDFPageInfo {
     //Logo Attributes
-    private String logoPath;
-    private float[] logoCoordinates;
-    private float[] logoSize;
-
-    //Theme Image Attributes
-    private String themeImagePath;
-    private float[] themeImageCoordinates;
-    private float[] themeImageSize;
+    private float[] logoCoordinates = {40, 60};;
+    private float[] logoSize = {140, 55};
 
     //Title Attributes
     private String title;
-    private PDFont titleFont;
-    private float titleFontSize;
-    private float[] titleCoordinates;
+    private PDFont titleFont = PDType1Font.HELVETICA_BOLD;
+    private float titleFontSize = 15;
+    private float[] titleCoordinates = {171, 678};
 
     //HeaderInfo Attributes
     private String[] headerInfo;
-    private PDFont headerInfoFont;
-    private float headerInfoFontSize;
-    private float[] headerCoordinates;
+    private PDFont headerInfoFont = PDType1Font.HELVETICA_BOLD;
+    private float headerInfoFontSize = 12;
+    private float[] headerCoordinates = {40, 650};
 
-
-    public String getLogoPath() {
-        return logoPath;
+    public Header() throws IOException {
     }
 
     public float[] getLogoCoordinates() {
@@ -54,8 +49,16 @@ public class Header extends PDF {
         return titleCoordinates;
     }
 
-    public void setLogoPath(String logoPath) {
-        this.logoPath = logoPath;
+    private float getTitleHeight() throws IOException {
+        return titleFont.getFontBoundingBox().getHeight() / 1000 * titleFontSize;
+    }
+
+    private float getTitleWidth() throws IOException {
+        return titleFont.getStringWidth(title) / 1000 * titleFontSize;
+    }
+
+    private float getHeaderInfoHeight() throws IOException {
+        return headerInfoFont.getFontBoundingBox().getHeight() / 1000 * headerInfoFontSize;
     }
 
     public void setLogoCoordinates(float[] logoCoordinates) {
@@ -112,28 +115,5 @@ public class Header extends PDF {
 
     public void setHeaderCoordinates(float[] headerCoordinates) {
         this.headerCoordinates = headerCoordinates;
-    }
-
-    public void setThemeImagePath(String themeImagePath) {
-        this.themeImagePath = themeImagePath;
-    }
-
-
-    public void setThemeImageCordinates(float[] themeImageCoordinates) { this.themeImageCoordinates = themeImageCoordinates; }
-
-    public void setThemeImageSize(float[] themeImageSize) {
-        this.themeImageSize = themeImageSize;
-    }
-
-    public String getThemeImagePath() {
-        return themeImagePath;
-    }
-
-    public float[] getThemeImageCoordinates() {
-        return themeImageCoordinates;
-    }
-
-    public float[] getThemeImageSize() {
-        return themeImageSize;
     }
 }

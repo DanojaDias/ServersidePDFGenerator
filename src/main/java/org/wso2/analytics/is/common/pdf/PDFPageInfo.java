@@ -1,10 +1,11 @@
 package org.wso2.analytics.is.common.pdf;
-import org.apache.pdfbox.pdmodel.common.PDRectangle;
+import org.pdfbox.pdmodel.PDPage;
+import org.pdfbox.pdmodel.common.PDRectangle;
 
-public class PDF {
+public class PDFPageInfo {
 
-    protected float margin;
-    protected PDRectangle pageSize;
+    protected float margin = 40;
+    protected PDRectangle pageSize = PDPage.PAGE_SIZE_LETTER;
 
     public void setMargin(float margin) {
         this.margin = margin;

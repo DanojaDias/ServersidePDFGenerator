@@ -1,28 +1,31 @@
 package org.wso2.analytics.is.common.pdf;
-import org.apache.pdfbox.pdmodel.font.PDFont;
+import org.pdfbox.pdmodel.font.PDFont;
+import org.pdfbox.pdmodel.font.PDType1Font;
 
 import java.util.List;
 
 /**
  * Created by danoja on 1/5/17.
  */
-public class Table extends PDF {
+public class Table extends PDFPageInfo {
 
-    private float rowHeight;
-    private PDFont textFont;
-    private float fontSize;
-    private float cellMargin;
-    private float tableTopY;
+
+    private PDFont textFont = PDType1Font.HELVETICA;
+    private float fontSize = 7;
+    private float cellMargin = 4;
+    private float rowHeight = 10 + cellMargin;
+    private float tableTopY = 600f;
     private List<Column> columns;
     private String[][] content;
-    private PDFont tableHeaderFont;
-    private float tableHeaderFontSize;
-    private int [] tableHeaderBackgroundColor;
-    private int[] tableFontColor;
-    private int[] tableLineColor;
-    private float tableLineWidth;
-    private int[] alternativeRowColor;
-    private int[] tableBodyFillColor;
+
+
+
+    private PDFont tableHeaderFont = PDType1Font.HELVETICA_BOLD;
+    private float tableHeaderFontSize = 8;
+    private int [] tableHeaderBackgroundColor = {201, 202, 197};
+    private int[] tableFontColor = {0, 0, 0};
+    private int[] alternativeRowColor = {240, 236, 224};
+    private int[] tableBodyFillColor = {255,255,255};
 
     public float getTableWidth() {
         float tableWidth = 0f;
@@ -123,14 +126,6 @@ public class Table extends PDF {
     public void setTableFontColor(int[] tableFontColor) { this.tableFontColor = tableFontColor; }
 
     public int[] getTableFontColor() { return tableFontColor; }
-
-    public void setTableLineColor(int[] tableLineColor) { this.tableLineColor = tableLineColor; }
-
-    public void setTableLineWidth(float tableLineWidth) { this.tableLineWidth = tableLineWidth; }
-
-    public int[] getTableLineColor() { return tableLineColor; }
-
-    public float getTableLineWidth() { return tableLineWidth; }
 
     public void setAlternativeRowColor(int[] alternativeRowColor) { this.alternativeRowColor = alternativeRowColor; }
 

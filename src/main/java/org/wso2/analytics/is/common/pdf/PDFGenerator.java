@@ -1,61 +1,65 @@
 package org.wso2.analytics.is.common.pdf;
 
-import org.apache.pdfbox.exceptions.COSVisitorException;
-import org.apache.pdfbox.pdmodel.PDDocument;
-import org.apache.pdfbox.pdmodel.PDPage;
-import org.apache.pdfbox.pdmodel.edit.PDPageContentStream;
-import org.apache.pdfbox.pdmodel.graphics.xobject.PDPixelMap;
+import org.pdfbox.exceptions.COSVisitorException;
+import org.pdfbox.pdmodel.PDDocument;
+import org.pdfbox.pdmodel.PDPage;
+import org.pdfbox.pdmodel.edit.PDPageContentStream;
+import org.pdfbox.pdmodel.graphics.xobject.PDJpeg;
+import org.pdfbox.pdmodel.graphics.xobject.PDXObjectImage;
 
-import javax.imageio.ImageIO;
-import java.awt.image.BufferedImage;
-import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
 
 public class PDFGenerator {
-
-    private PDDocument doc = null;
-    private PDF pdf;
-    private PDPage page;
-    private PDPageContentStream contentStream;
-    public void generatePDF(PDF pdf, Table table, Header header) throws IOException, COSVisitorException {
-        this.pdf=pdf;
-        try {
-            doc = new PDDocument();
-            page = generatePage();
-            drawHeader(header);
-            drawTable(table);
-            doc.save("sample.pdf");
-        } finally {
-            if (doc != null) {
-                doc.close();
-            }
+    /*
+    *This method generates the PDF
+    *@param pdf This is the object of PDFPageInfo class
+    *@param table this is a object of Table class
+    *@param header this is a object of Header class
+    *@param outputStream this is the output stream
+    */
+    public void generatePDF(PDFPageInfo pdf, Table table, Header header, OutputStream outputStream) throws IOException, COSVisitorException {
+        if(table.getContent()!=null && table.getContent().length !=0) {
+            PDDocument pdfDoc = new PDDocument();
+            PDPage pdPage = generatePage(pdf, pdfDoc);
+            PDPage page = pdPage;
+            PDPageContentStream contentStream = drawHeader(header, pdfDoc, page);
+            drawTable(pdfDoc, contentStream, pdf, table, header);
+            pdfDoc.save(outputStream);
+            pdfDoc.close();
         }
     }
 
-    private void drawHeader(Header header) throws IOException {
-        drawLogo(header);
-        drawThemeImage(header);
-        drawTitle(header);
-        drawHeaderInfo(header);
+    private PDPageContentStream drawHeader(Header header, PDDocument pdfDoc, PDPage page ) throws IOException {
+        PDPageContentStream contentStream = drawLogo(header, pdfDoc, page);
+        if(header !=null) {
+            if (header.getTitle() != null) {
+                drawTitle(header, contentStream);
+            }
+            if (header.getHeaderInfo() != null) {
+                drawHeaderInfo(header, contentStream);
+            }
+        }
+        return contentStream;
     }
 
-    private void drawLogo(Header header) throws IOException {
-        BufferedImage awtImage = ImageIO.read(new File(header.getLogoPath()));
-        PDPixelMap ximage = new PDPixelMap(doc, awtImage);
-        contentStream = new PDPageContentStream(doc, page);
-        contentStream.drawXObject(ximage, (header.getLogoCoordinates())[0],  page.getMediaBox().getHeight() - (header.getLogoCoordinates())[1], (header.getLogoSize())[0], (header.getLogoSize())[1]);
+    private PDPageContentStream drawLogo(Header header, PDDocument pdfDoc, PDPage page) throws IOException {
+        PDPageContentStream contentStream;
+        try(InputStream inputStream = this.getClass().getResourceAsStream("/logo.jpg")){
+            PDXObjectImage ximage = new PDJpeg(pdfDoc, inputStream);
+            contentStream = new PDPageContentStream(pdfDoc, page);
+            contentStream.drawImage(ximage, (header.getLogoCoordinates())[0], page.getMediaBox().getHeight() -
+                    (header.getLogoCoordinates())[1], (header.getLogoSize())[0], (header.getLogoSize())[1]);
+        }catch(NullPointerException ex){
+            contentStream = new PDPageContentStream(pdfDoc, page);
+        }
+        return contentStream;
     }
 
-
-    private void drawThemeImage(Header header) throws IOException {
-        BufferedImage awtImage = ImageIO.read(new File(header.getThemeImagePath()));
-        PDPixelMap ximage = new PDPixelMap(doc, awtImage);
-        contentStream.drawXObject(ximage, (header.getThemeImageCoordinates())[0],  page.getMediaBox().getHeight() - (header.getThemeImageCoordinates())[1], (header.getThemeImageSize())[0], (header.getThemeImageSize())[1]);
-    }
-
-    private void drawTitle(Header header) throws IOException {
+    private void drawTitle(Header header, PDPageContentStream contentStream) throws IOException {
         contentStream.setFont(header.getTitleFont(), header.getTitleFontSize());
         contentStream.beginText();
         contentStream.moveTextPositionByAmount((header.getTitleCoordinates())[0],(header.getTitleCoordinates())[1]);
@@ -63,9 +67,9 @@ public class PDFGenerator {
         contentStream.endText();
     }
 
-    private void drawHeaderInfo(Header header) throws IOException {
+    private void drawHeaderInfo(Header header, PDPageContentStream contentStream) throws IOException {
         contentStream.setFont(header.getHeaderInfoFont(), header.getHeaderInfoFontSize());
-        float headerInfoHeight = header.getHeaderInfoFont().getFontDescriptor().getFontBoundingBox().getHeight() / 1000 * header.getHeaderInfoFontSize();
+        float headerInfoHeight = header.getHeaderInfoFont().getFontBoundingBox().getHeight() / 1000 * header.getHeaderInfoFontSize();
         float nexty=header.getHeaderCoordinates()[1];
         for(int i=0;i < header.getHeaderInfo().length;i++) {
             contentStream.beginText();
@@ -76,17 +80,18 @@ public class PDFGenerator {
         }
     }
 
-    private void drawTable(Table table) throws IOException {
-        float nextY = drawTableHeader(table);
-        drawTableBody(table, nextY);
+    private void drawTable(PDDocument pdfDoc, PDPageContentStream contentStream, PDFPageInfo pdf, Table table, Header header) throws IOException {
+        float nextY = drawTableHeader(contentStream, table);
+        drawTableBody(contentStream, pdfDoc, pdf, table, nextY, header);
     }
 
-    private float drawTableHeader(Table table) throws IOException {
+    private float drawTableHeader(PDPageContentStream contentStream ,Table table) throws IOException {
         //draw the content line
-        return writeContentLine(table.getColumnsNamesAsArray(), table.getMargin(), table.getTableTopY() - table.getRowHeight(), table, false, true);
+        return writeContentLine(contentStream,table.getColumnsNamesAsArray(), table.getMargin(), table.getTableTopY() - table.getRowHeight(), table, false, true);
     }
 
-    private float writeContentLine(String[] lineContent, float nextTextX, float nextTextY, Table table, boolean IsEven, boolean IsHeader) throws IOException {
+    private float writeContentLine(PDPageContentStream contentStream,String[] lineContent, float nextTextX, float nextTextY, Table table,
+                                   boolean IsEven, boolean IsHeader) throws IOException {
         float yStartPerRow = nextTextY;
         float xStartPerRow = nextTextX;
         float lowestY = nextTextY;
@@ -145,17 +150,6 @@ public class PDFGenerator {
             }
             nextTextX += table.getColumns().get(i).getWidth();
         }
-        //draw vertical lines per Row
-        contentStream.setStrokingColor(table.getTableLineColor()[0], table.getTableLineColor()[1], table.getTableLineColor()[2]);
-        contentStream.setLineWidth(table.getTableLineWidth());
-        for (int i = 0; i < table.getNumberOfColumns(); i++) {
-            contentStream.drawLine(xStartPerRow, nextTextY + table.getRowHeight(), xStartPerRow, lowestY - table.getCellMargin() + table.getRowHeight());
-            xStartPerRow += table.getColumns().get(i).getWidth();
-        }
-        //draw last vertical line per Row
-        contentStream.drawLine(xStartPerRow, nextTextY + table.getRowHeight(), xStartPerRow, lowestY - table.getCellMargin()+ table.getRowHeight());
-        //draw the bottom line of the row
-        contentStream.drawLine(table.getMargin(), lowestY - table.getCellMargin() + table.getRowHeight(), table.getMargin() + table.getTableWidth(), lowestY - table.getCellMargin() + table.getRowHeight());
         return lowestY;
     }
 
@@ -220,28 +214,50 @@ public class PDFGenerator {
         return lines;
     }
 
-    private void drawTableBody(Table table, float nextY) throws IOException {
+    private void drawTableBody(PDPageContentStream contentStream, PDDocument pdfDoc, PDFPageInfo pdf, Table table, float nextY, Header header) throws IOException {
+        int pageNo = 0;
         for(int i = 0; i < table.getContent().length; i++) {
             if(nextY < table.getMargin()) {
+                pageNo++;
+                drawFooter(contentStream, header, pageNo);
                 contentStream.close();
-                page = generatePage();
+                PDPage page = generatePage(pdf, pdfDoc);
                 nextY =table.getPageSize().getHeight() - table.getMargin() - table.getRowHeight();
-                contentStream = new PDPageContentStream(doc, page);
+                contentStream = new PDPageContentStream(pdfDoc, page);
+
             }
             if(i%2==0) {
-               nextY = writeContentLine(table.getContent()[i], table.getMargin(), nextY, table, true, false);
+               nextY = writeContentLine(contentStream, table.getContent()[i], table.getMargin(), nextY, table, true, false);
             }
             else{
-                nextY = writeContentLine(table.getContent()[i], table.getMargin(), nextY, table, false, false);
+                nextY = writeContentLine(contentStream, table.getContent()[i], table.getMargin(), nextY, table, false, false);
             }
         }
+        pageNo++;
+        drawFooter(contentStream, header, pageNo);
         contentStream.close();
     }
 
-    private PDPage generatePage() {
-        page = new PDPage();
+    private void drawFooter(PDPageContentStream contentStream, Header header, int pageNo) throws IOException {
+        contentStream.beginText();
+        if(header != null) {
+            contentStream.moveTextPositionByAmount(header.getMargin(), 10);
+            if (header.getTitle() != null) {
+                contentStream.drawString(header.getTitle() + " - " + pageNo);
+            } else {
+                contentStream.drawString("" + pageNo);
+            }
+        }else {
+            contentStream.moveTextPositionByAmount(40, 10);
+            contentStream.drawString("" + pageNo);
+        }
+        contentStream.endText();
+    }
+
+    private PDPage generatePage(PDFPageInfo pdf,PDDocument pdfDoc) {
+        PDPage page = new PDPage();
         page.setMediaBox(pdf.getPageSize());
-        doc.addPage(page);
+        pdfDoc.addPage(page);
         return page;
     }
 }

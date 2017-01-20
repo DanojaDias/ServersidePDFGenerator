@@ -1,9 +1,10 @@
 package org.wso2.analytics.is.common.pdf;
-import org.apache.pdfbox.exceptions.COSVisitorException;
-import org.apache.pdfbox.pdmodel.PDPage;
-import org.apache.pdfbox.pdmodel.common.PDRectangle;
-import org.apache.pdfbox.pdmodel.font.PDFont;
-import org.apache.pdfbox.pdmodel.font.PDType1Font;
+import org.pdfbox.exceptions.COSVisitorException;
+import org.pdfbox.pdmodel.PDPage;
+import org.pdfbox.pdmodel.common.PDRectangle;
+import org.pdfbox.pdmodel.font.PDFont;
+import org.pdfbox.pdmodel.font.PDType1Font;
+import org.testng.annotations.Test;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -12,34 +13,30 @@ import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
 
-public class PDFSample {
+import static org.testng.AssertJUnit.assertTrue;
+
+public class PDFGeneratorTest {
 
     //PDF configuration
-    private static final PDRectangle PAGE_SIZE = PDPage.PAGE_SIZE_A3;
+    private static final PDRectangle PAGE_SIZE = PDPage.PAGE_SIZE_LETTER;
     private static final float MARGIN = 40;
 
     //PDF Logo Image Configuration
-    private static final String LOGO_PATH = "/home/danoja/Pictures/is-analytics-header-logo.png";
     private static final float [] LOGO_COORDINATES ={MARGIN, 60};
     private static final float [] LOGO_SIZE ={140, 55};
-
-    //PDF Theme image Configuration
-    private static final String THEME_IMAGE_PATH = "/home/danoja/Pictures/Orange.png";
-    private static final float [] THEME_IMAGE_COORDINATES ={PAGE_SIZE.getWidth()- 76, 91};
-    private static final float [] THEME_IMAGE_SIZE ={75, 90};
 
     //PDF Title Configurations
     private static final String TITLE = "ABNORMAL LONG SESSION ALERTS";
     private static final float TITLE_FONT_SIZE = 15;
     private static final PDFont TITLE_FONT = PDType1Font.HELVETICA_BOLD;
-    private static float titleHeight = TITLE_FONT.getFontDescriptor().getFontBoundingBox().getHeight() / 1000 * TITLE_FONT_SIZE;
+    private static float titleHeight = getTitleHeight();
     private static final float [] TITLE_COORDINATES ={(PAGE_SIZE.getWidth() - getTitleWidth()) / 2, PAGE_SIZE.getHeight() - LOGO_COORDINATES[1] - 3*titleHeight};
 
     //PDF HeaderInfo Configurations
     private static final String[] HEADER_INFO = {"Starting Date : 11/24/2016, 12:06:05 PM","Ending Date  : 12/23/2016, 12:06:05 PM","Total Records : 924"};
     private static final float HEADER_FONT_SIZE = 12;
     private static final PDFont HEADER_FONT = PDType1Font.HELVETICA_BOLD;
-    private static float headerInfoHeight = HEADER_FONT.getFontDescriptor().getFontBoundingBox().getHeight() / 1000 * HEADER_FONT_SIZE;
+    private static float headerInfoHeight = getHeaderInfoHeight();
     private static final float [] HEADER_COORDINATES ={MARGIN, PAGE_SIZE.getHeight() - LOGO_COORDINATES[1] - 3*titleHeight - 2*headerInfoHeight};
 
 
@@ -53,12 +50,12 @@ public class PDFSample {
     private static final float TABLE_HEADER_FONT_SIZE = 11;
     private static final int[] TABLE_HEADER_BACKGROUND_COLOR = {201, 202, 197};
     private static final int[] TABLE_FONT_COLOR ={0, 0, 0} ;
-    private static final int[] TABLE_LINE_COLOR = {255,255,255};
     private static final float TABLE_LINE_WIDTH = 1.5f;
     private static final int[] ALTERNATIVE_ROW_COLOR = {240, 236, 224};
     private static final int[] TABLE_BODY_FILL_COLOR = {255,255,255};
 
-    public static void main(String[] args) throws IOException, COSVisitorException {
+    @Test
+    public static void testPDFGeneration(String[] args) throws IOException, COSVisitorException {
         File file = new File("newfile.pdf");
         if (!file.exists()) {
             file.createNewFile();
@@ -67,6 +64,8 @@ public class PDFSample {
             PDFGenerator pdfGenerator = new PDFGenerator();
             pdfGenerator.generatePDF(createPDF(), createContent(), createHeader(), os);
         }
+        double bytes = file.length();
+        assertTrue("File size should be greater than is empty", bytes > 1000 );
     }
 
     private static PDFPageInfo createPDF() {
@@ -86,6 +85,29 @@ public class PDFSample {
         }
         return titleWidth;
     }
+
+    private static float getTitleHeight() {
+        float titleHeight = 0;
+        try {
+            titleHeight = TITLE_FONT.getFontBoundingBox().getHeight() / 1000 * TITLE_FONT_SIZE;
+        }
+        catch(IOException ex){
+            //Error on getting Tittle Width
+        }
+        return titleHeight;
+    }
+
+    private static float getHeaderInfoHeight() {
+        float headerInfoHeight = 0;
+        try {
+            headerInfoHeight = HEADER_FONT.getFontBoundingBox().getHeight() / 1000 * HEADER_FONT_SIZE;
+        }
+        catch(IOException ex){
+            //Error on getting Tittle Width
+        }
+        return headerInfoHeight;
+    }
+
     private static Table createContent() {
         // Total size of columns must not be greater than table width.
         List<Column> columns = new ArrayList<Column>();
@@ -220,21 +242,15 @@ public class PDFSample {
         table.setTableHeaderFontSize(TABLE_HEADER_FONT_SIZE);
         table.setTableFontColor(TABLE_FONT_COLOR);
         table.setTableHeaderBackgroundColor(TABLE_HEADER_BACKGROUND_COLOR);
-        table.setTableLineColor(TABLE_LINE_COLOR);
-        table.setTableLineWidth(TABLE_LINE_WIDTH);
         table.setAlternativeRowColor(ALTERNATIVE_ROW_COLOR);
         table.setTableBodyFillColor(TABLE_BODY_FILL_COLOR);
         return table;
     }
 
-    private static Header createHeader() {
+    private static Header createHeader() throws IOException {
         Header header = new Header();
-        header.setLogoPath(LOGO_PATH);
         header.setLogoCoordinates(LOGO_COORDINATES);
         header.setLogoSize(LOGO_SIZE);
-        header.setThemeImagePath(THEME_IMAGE_PATH);
-        header.setThemeImageCordinates(THEME_IMAGE_COORDINATES);
-        header.setThemeImageSize(THEME_IMAGE_SIZE);
         header.setTitle(TITLE);
         header.setTitleFont(TITLE_FONT);
         header.setTitleFontSize(TITLE_FONT_SIZE);
@@ -243,6 +259,7 @@ public class PDFSample {
         header.setHeaderInfoFont(HEADER_FONT);
         header.setHeaderInfoFontSize(HEADER_FONT_SIZE);
         header.setHeaderCoordinates(HEADER_COORDINATES);
+        header.setMargin(MARGIN);
         return header;
     }
 }
