@@ -26,7 +26,7 @@ public class PDFSample {
          }
          try(OutputStream os = new FileOutputStream(file)) {
              PDFGenerator pdfGenerator = new PDFGenerator();
-             pdfGenerator.generatePDF(createPDF(), createContent(), null, os);
+             pdfGenerator.generatePDF(createPDF(), createContent(), null, null, os);
          }
      }
      private static PDFPageInfo createPDF() {
@@ -76,14 +76,14 @@ Configurable Components are shown in the following image
 ####setLogoCoordinates
 
  ```java
- public void setLogoCoordinates(float[] logoCoordinates)
+ void setLogoCoordinates(float[] logoCoordinates)
 ```
 Changes the logo coordinates. This takes a float array that has the x, y coordinates of the logo.
 
 ####setLogoSize
 
 ```java
-public void setLogoSize(float[] logoSize)
+void setLogoSize(float[] logoSize)
 ```
 Changes the logo coordinates. This takes a float array that has the x, y coordinates of the logo.
 
@@ -93,28 +93,28 @@ Changes the logo coordinates. This takes a float array that has the x, y coordin
 ####setTitle
 
 ```java
-public void setTitle(String title)
+void setTitle(String title)
 ```
 Set the title.
 
 ####setTitleFont
 
 ```java
-public void setTitleFont(PDFont titleFont)
+void setTitleFont(PDFont titleFont)
 ```
 Set the title font.
 
 ####setTitleFontSize
 
 ```java
-public void setTitleFontSize(float titleFontSize)
+void setTitleFontSize(float titleFontSize)
 ```
 Set the title font size.
 
 ####setTitleCoordinates
 
 ```java
-public void setTitleCoordinates(float[] titleCoordinates)
+void setTitleCoordinates(float[] titleCoordinates)
 ```
 Set the title Coordinates. This takes a size 2 array which takes the x, y coordinates
 
@@ -123,7 +123,7 @@ Set the title Coordinates. This takes a size 2 array which takes the x, y coordi
 ####setHeaderInfo
 
 ```java
-public void setHeaderInfo(String[] headerInfo)
+void setHeaderInfo(String[] headerInfo)
 ```
 Set the header information that needs to be at the top of the page. This is a String
 array that contains the Strings per each line
@@ -131,21 +131,21 @@ array that contains the Strings per each line
 ####setHeaderInfoFont
 
 ```java
-public void setHeaderInfoFont(PDFont headerInfoFont)
+void setHeaderInfoFont(PDFont headerInfoFont)
 ```
 Set the header information font
 
 ####setHeaderInfoFontSize
 
 ```java
-public void setHeaderInfoFontSize(float headerInfoFontSize)
+void setHeaderInfoFontSize(float headerInfoFontSize)
 ```
 Set the header information font size
 
 ####setHeaderCoordinates
 
 ```java
-public void setHeaderCoordinates(float[] headerCoordinates)
+void setHeaderCoordinates(float[] headerCoordinates)
 ```
 Set the header coordinates. This is a float array that gives the x, y coordinates of the
 beggining of the header info.
@@ -155,7 +155,7 @@ beggining of the header info.
 ####setTableTopY
 
 ```java
-public void setTableTopY(float tableTopY)
+void setTableTopY(float tableTopY)
 ```
 Changes the table top Coordinate
 
@@ -163,19 +163,19 @@ Changes the table top Coordinate
 
 ####setTableHeaderFont
 ```java
-public void setTableHeaderFont(PDFont tableHeaderFont)
+void setTableHeaderFont(PDFont tableHeaderFont)
 ```
 Changes the text font of the table header.
 
 ####setTableHeaderFontSize
 ```java
-public void setTableHeaderFontSize(float tableHeaderFontSize)
+void setTableHeaderFontSize(float tableHeaderFontSize)
 ```
 Changes the text font size of the table header.
 
 ####setTableHeaderBackgroundColor
 ```java
-public void setTableHeaderBackgroundColor(int[] tableHeaderBackgroundColor)
+void setTableHeaderBackgroundColor(int[] tableHeaderBackgroundColor)
 ```
 Changes the background colour of the table header. This takes a integer array of
 size 3 which contains the RGB value of the color
@@ -184,46 +184,46 @@ size 3 which contains the RGB value of the color
 
 ####setTextFont
 ```java
-public void setTextFont(PDFont textFont)
+void setTextFont(PDFont textFont)
 ```
 Changes the font of the Table body.
 
 ####setTableFontColor
 ```java
-public void setTableFontColor(int[] tableFontColor)
+void setTableFontColor(int[] tableFontColor)
 ```
 Changes the font colour of the table body font. This takes a integer array of
 size 3 which contains the RGB value of the color
 
 ####setFontSize
 ```java
-public void setFontSize(float fontSize)
+void setFontSize(float fontSize)
 ```
 Changes the font size of the Table body font.
 
 ####setTableBodyFillColor
 ```java
-public void setTableBodyFillColor(int[] tableBodyFillColor)
+void setTableBodyFillColor(int[] tableBodyFillColor)
 ```
 Changes the body colour of the table body. This takes a Integer array of
 size 3 which contains the RGB value of the color
 
 ####setAlternativeRowColor
 ```java
-public void setAlternativeRowColor(int[] alternativeRowColor)
+void setAlternativeRowColor(int[] alternativeRowColor)
 ```
 Changes the body colour of the table body alternative rows. This takes a Integer array of
 size 3 which contains the RGB value of the color
 
 ####setRowHeight
 ```java
-public void setRowHeight(float rowHeight)
+void setRowHeight(float rowHeight)
 ```
 Changes the row Height of the table.
 
 ####setCellMargin
 ```java
-public void setCellMargin(float cellMargin)
+void setCellMargin(float cellMargin)
 ```
 Changes the size of the cell Margin of the table.
 
@@ -232,14 +232,31 @@ Changes the size of the cell Margin of the table.
 ####setPageSize
 
 ```java
-public void setPageSize(PDRectangle pageSize)
+void setPageSize(PDRectangle pageSize)
 ```
 Set the page Size
 
 ####setMargin
 
 ```java
-public void setMargin(float margin)
+void setMargin(float margin)
 ```
 Set the Margin of the page
+
+###PDF Footer Configurations
+
+####setFooterContent
+
+```java
+void setFooterContent(String footerContent)
+```
+Set the Footer Content
+
+####setFooterCoordinates
+
+```java
+void setFooterCoordinates(float[] footerCoordinates)
+```
+Set the Coordinates of the Footer
+
  
