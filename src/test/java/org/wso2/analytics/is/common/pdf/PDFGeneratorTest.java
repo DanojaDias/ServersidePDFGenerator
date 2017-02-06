@@ -57,12 +57,15 @@ public class PDFGeneratorTest {
     @Test
     public static void testPDFGeneration(String[] args) throws IOException, COSVisitorException {
         File file = new File("newfile.pdf");
+        boolean fileCreated = false;
         if (!file.exists()) {
-            file.createNewFile();
+            fileCreated = file.createNewFile();
         }
-        try(OutputStream os = new FileOutputStream(file)) {
-            PDFGenerator pdfGenerator = new PDFGenerator();
-            pdfGenerator.generatePDF(createPDF(), createContent(), createHeader(), os);
+        if(fileCreated) {
+            try(OutputStream os = new FileOutputStream(file)) {
+                PDFGenerator pdfGenerator = new PDFGenerator();
+                pdfGenerator.generatePDF(createPDF(), createTable(), createHeader(), createFooter() ,os);
+            }
         }
         double bytes = file.length();
         assertTrue("File size should be greater than is empty", bytes > 1000 );
@@ -108,9 +111,9 @@ public class PDFGeneratorTest {
         return headerInfoHeight;
     }
 
-    private static Table createContent() {
+    private static Table createTable() {
         // Total size of columns must not be greater than table width.
-        List<Column> columns = new ArrayList<Column>();
+        List<Column> columns = new ArrayList<>();
         columns.add(new Column("FirstName", 90 + TABLE_LINE_WIDTH));
         columns.add(new Column("LastName", 90  + TABLE_LINE_WIDTH));
         columns.add(new Column("Email", 100  + TABLE_LINE_WIDTH));
@@ -261,5 +264,11 @@ public class PDFGeneratorTest {
         header.setHeaderCoordinates(HEADER_COORDINATES);
         header.setMargin(MARGIN);
         return header;
+    }
+
+    private static Footer createFooter() throws IOException {
+        Footer footer = new Footer();
+        footer.setFooterContent(TITLE);
+        return footer;
     }
 }

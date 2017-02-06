@@ -39,7 +39,7 @@ class DefaultConstants {
 
     static final float DEFAULT_ROW_HEIGHT = 10 + DEFAULT_CELL_MARGIN;
 
-    static final float DEFAULT_TABLE_TOPY = 570f;
+    static final float DEFAULT_TABLE_TOP_Y = 570f;
 
     static final PDFont DEFAULT_TABLE_HEADER_FONT = PDType1Font.HELVETICA_BOLD;
 
@@ -57,6 +57,8 @@ class DefaultConstants {
     //Constant used in PDFPageInfo
     static final float DEFAULT_MARGIN = 40;
 
-    static final PDRectangle DEFAULT_PAGESIZE = PDPage.PAGE_SIZE_LETTER;
+    static final PDRectangle DEFAULT_PAGE_SIZE = PDPage.PAGE_SIZE_LETTER;
 
+    //Constants used in Footer
+    static final float[] DEFAULT_FOOTER_COORDINATES = {40, 10};
 }

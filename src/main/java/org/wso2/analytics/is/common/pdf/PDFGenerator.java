@@ -13,7 +13,7 @@ import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
 
-public class PDFGenerator {
+class PDFGenerator {
     /*
     *This method generates the PDF
     *@param pdf This is the object of PDFPageInfo class
@@ -21,13 +21,12 @@ public class PDFGenerator {
     *@param header this is a object of Header class
     *@param outputStream this is the output stream
     */
-    public void generatePDF(PDFPageInfo pdf, Table table, Header header, OutputStream outputStream) throws IOException, COSVisitorException {
+    void generatePDF(PDFPageInfo pdf, Table table, Header header, Footer footer, OutputStream outputStream) throws IOException, COSVisitorException {
         if(table.getContent()!=null && table.getContent().length !=0) {
             PDDocument pdfDoc = new PDDocument();
             PDPage pdPage = generatePage(pdf, pdfDoc);
-            PDPage page = pdPage;
-            PDPageContentStream contentStream = drawHeader(header, pdfDoc, page);
-            drawTable(pdfDoc, contentStream, pdf, table, header);
+            PDPageContentStream contentStream = drawHeader(header, pdfDoc, pdPage);
+            drawTable(pdfDoc, contentStream, pdf, table, footer);
             pdfDoc.save(outputStream);
             pdfDoc.close();
         }
@@ -80,9 +79,9 @@ public class PDFGenerator {
         }
     }
 
-    private void drawTable(PDDocument pdfDoc, PDPageContentStream contentStream, PDFPageInfo pdf, Table table, Header header) throws IOException {
+    private void drawTable(PDDocument pdfDoc, PDPageContentStream contentStream, PDFPageInfo pdf, Table table, Footer footer) throws IOException {
         float nextY = drawTableHeader(contentStream, table);
-        drawTableBody(contentStream, pdfDoc, pdf, table, nextY, header);
+        drawTableBody(contentStream, pdfDoc, pdf, table, nextY, footer);
     }
 
     private float drawTableHeader(PDPageContentStream contentStream ,Table table) throws IOException {
@@ -93,7 +92,6 @@ public class PDFGenerator {
     private float writeContentLine(PDPageContentStream contentStream,String[] lineContent, float nextTextX, float nextTextY, Table table,
                                    boolean IsEven, boolean IsHeader) throws IOException {
         float yStartPerRow = nextTextY;
-        float xStartPerRow = nextTextX;
         float lowestY = nextTextY;
         float yStart = nextTextY;
         //Calculate lowest y to draw the background color;
@@ -155,7 +153,7 @@ public class PDFGenerator {
 
     //If a line overflows in a row, This method returns a list that contains the lines
     private List<String> getLinesPerRow(String text, float width, Table table, boolean IsHeader) throws IOException {
-        List<String> lines = new ArrayList<String>();
+        List<String> lines = new ArrayList<>();
         int lastSpace = -1;
         //checks if line overflows and break them into pieces of column width
         while (text.length() > 0){
@@ -214,12 +212,12 @@ public class PDFGenerator {
         return lines;
     }
 
-    private void drawTableBody(PDPageContentStream contentStream, PDDocument pdfDoc, PDFPageInfo pdf, Table table, float nextY, Header header) throws IOException {
+    private void drawTableBody(PDPageContentStream contentStream, PDDocument pdfDoc, PDFPageInfo pdf, Table table, float nextY, Footer footer) throws IOException {
         int pageNo = 0;
         for(int i = 0; i < table.getContent().length; i++) {
             if(nextY < table.getMargin()) {
                 pageNo++;
-                drawFooter(contentStream, header, pageNo);
+                drawFooter(contentStream, footer, pageNo);
                 contentStream.close();
                 PDPage page = generatePage(pdf, pdfDoc);
                 nextY =table.getPageSize().getHeight() - table.getMargin() - table.getRowHeight();
@@ -234,21 +232,21 @@ public class PDFGenerator {
             }
         }
         pageNo++;
-        drawFooter(contentStream, header, pageNo);
+        drawFooter(contentStream, footer, pageNo);
         contentStream.close();
     }
 
-    private void drawFooter(PDPageContentStream contentStream, Header header, int pageNo) throws IOException {
+    private void drawFooter(PDPageContentStream contentStream, Footer footer, int pageNo) throws IOException {
         contentStream.beginText();
-        if(header != null) {
-            contentStream.moveTextPositionByAmount(header.getMargin(), 10);
-            if (header.getTitle() != null) {
-                contentStream.drawString(header.getTitle() + " - " + pageNo);
+        if(footer != null) {
+            contentStream.moveTextPositionByAmount(footer.getFooterCoordinates()[0], footer.getFooterCoordinates()[1]);
+            if (footer.getFooterContent() != null) {
+                contentStream.drawString(footer.getFooterContent() + " - " + pageNo);
             } else {
                 contentStream.drawString("" + pageNo);
             }
         }else {
-            contentStream.moveTextPositionByAmount(40, 10);
+            contentStream.moveTextPositionByAmount(DefaultConstants.DEFAULT_FOOTER_COORDINATES[0], DefaultConstants.DEFAULT_FOOTER_COORDINATES[1]);
             contentStream.drawString("" + pageNo);
         }
         contentStream.endText();

@@ -5,7 +5,7 @@
 ##Usage
 First, A java Class is need to be created giving all the configurations.
 
-A default table can be generted using the following code.
+A default table can be generated using the following code.
 
 ```java
 package org.wso2.analytics.is.common.pdf;
@@ -78,14 +78,14 @@ Configurable Components are shown in the following image
  ```java
  public void setLogoCoordinates(float[] logoCoordinates)
 ```
-Changes the logo coordinates. This takes a float array that has the x, y coodinates of the logo.
+Changes the logo coordinates. This takes a float array that has the x, y coordinates of the logo.
 
 ####setLogoSize
 
 ```java
 public void setLogoSize(float[] logoSize)
 ```
-Changes the logo coordinates. This takes a float array that has the x, y coodinates of the logo.
+Changes the logo coordinates. This takes a float array that has the x, y coordinates of the logo.
 
 
 ###Title Configurations
@@ -116,7 +116,7 @@ Set the title font size.
 ```java
 public void setTitleCoordinates(float[] titleCoordinates)
 ```
-Set the title Coordinates. This takes a size 2 array which takes the x, y coodinates
+Set the title Coordinates. This takes a size 2 array which takes the x, y coordinates
 
 ###Header Info Configurations
 
@@ -147,7 +147,7 @@ Set the header information font size
 ```java
 public void setHeaderCoordinates(float[] headerCoordinates)
 ```
-Set the header coordinates. This is a float array that gives the x, y coodinates of the
+Set the header coordinates. This is a float array that gives the x, y coordinates of the
 beggining of the header info.
 
 ###Table Configurations

@@ -8,7 +8,7 @@ import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
 
-public class PDFGenerateLauncher {
+public class PDFLauncher {
     public static void generatePDF(String[] columns, String[][] rows, int[] columnSizes, String title, String[] headerInfo) throws IOException, COSVisitorException {
         File file = new File("repository/deployment/server/jaggeryapps/portal/controllers/apis/pdfSample.pdf");
         boolean fileCreated = false;
@@ -18,26 +18,23 @@ public class PDFGenerateLauncher {
         if(fileCreated) {
             try(OutputStream os = new FileOutputStream(file)) {
                 PDFGenerator pdfGenerator = new PDFGenerator();
-                pdfGenerator.generatePDF(createPDF(), createTable(columns, rows, columnSizes), createHeader(title, headerInfo), os);
+                pdfGenerator.generatePDF(createPDF(), createTable(columns, rows, columnSizes), createHeader(title, headerInfo), createFooter(title), os);
             }
         }
     }
 
     private static PDFPageInfo createPDF() {
-        PDFPageInfo pdf = new PDFPageInfo();
-        return pdf;
+        return new PDFPageInfo();
     }
 
     private static Table createTable(String[] columns, String[][] rows, int[] columnSizes) {
-        // Total size of columns must not be greater than table width.
-        List<Column> tableColumn = new ArrayList<Column>();
+        List<Column> tableColumn = new ArrayList<>();
         for(int i = 0; i < columns.length; i++) {
             tableColumn.add(new Column(columns[i], columnSizes[i]));
         }
-        String[][] content = rows;
         Table table = new Table();
         table.setColumns(tableColumn);
-        table.setContent(content);
+        table.setContent(rows);
         return table;
     }
 
@@ -45,7 +42,17 @@ public class PDFGenerateLauncher {
         Header header = new Header();
         header.setTitle(title);
         header.setHeaderInfo(headerInfo);
+        float titleCoordinateX = (DefaultConstants.DEFAULT_PAGE_SIZE.getWidth() -
+                (DefaultConstants.DEFAULT_TITLE_FONT.getStringWidth(title) / 1000 * DefaultConstants.DEFAULT_TITLE_FONT_SIZE )) / 2;
+        float [] titleCoordinate = {titleCoordinateX, DefaultConstants.DEFAULT_TITLE_COORDINATES[1]};
+        header.setTitleCoordinates(titleCoordinate);
         return header;
+    }
+
+    private static Footer createFooter(String title) throws IOException {
+        Footer footer = new Footer();
+        footer.setFooterContent(title);
+        return footer;
     }
 }
 

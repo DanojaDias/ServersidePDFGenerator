@@ -1,6 +1,6 @@
 package org.wso2.analytics.is.common.pdf;
 
-public class Column {
+class Column {
     private String name;
     private float width;
 
