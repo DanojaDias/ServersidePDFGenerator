@@ -61,7 +61,7 @@ public class PDFSample {
 ##Configure the PDF Template
 
 Configurable Components are shown in the following image
- ![Image of the configurable Components of the pdf](https://github.com/DanojaDias/ServersidePDFGenerator/blob/master/configurable-componenets.png)
+ ![Image of the configurable Components of the pdf](https://github.com/DanojaDias/ServersidePDFGenerator/blob/master/configurable-components.png)
 
 ### 1. [Logo Image](#logo-image-configurations)
 ### 2. [Title](#title-configurations)
@@ -69,8 +69,8 @@ Configurable Components are shown in the following image
 ### 4. [Table](#table-configurations)
 ### 5. [Table Header](#table-header-configurations)
 ### 6. [Table Body](#table-body-configurations)
-### 7. [PDF Page](#PDF-page-configurations)
-### 8. [Footer ](#PDF-footer-configurations)
+### 7. [PDF Page](#pdf-page-configurations)
+### 8. [Footer](#pdf-footer-configurations)
 
 ###Logo Image Configurations
 
