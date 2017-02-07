@@ -23,6 +23,7 @@ class Table extends PDFPageInfo {
     private int[] tableBodyFillColor = DefaultConstants.DEFAULT_TABLE_BODY_FILL_COLOR;
 
     float getTableWidth() {
+
         float tableWidth = 0f;
         for (Column column : columns) {
             tableWidth += column.getWidth();
@@ -35,6 +36,7 @@ class Table extends PDFPageInfo {
     }
 
     String[] getColumnsNamesAsArray() {
+
         String[] columnNames = new String[getNumberOfColumns()];
         for (int i = 0; i < getNumberOfColumns(); i++) {
             columnNames[i] = columns.get(i).getName();

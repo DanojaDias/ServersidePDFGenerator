@@ -22,17 +22,29 @@ class PDFGenerator {
     *@param outputStream this is the output stream
     */
     void generatePDF(PDFPageInfo pdf, Table table, Header header, Footer footer, OutputStream outputStream) throws IOException, COSVisitorException {
+
         if(table.getContent()!=null && table.getContent().length !=0) {
-            PDDocument pdfDoc = new PDDocument();
-            PDPage pdPage = generatePage(pdf, pdfDoc);
-            PDPageContentStream contentStream = drawHeader(header, pdfDoc, pdPage);
-            drawTable(pdfDoc, contentStream, pdf, table, footer);
-            pdfDoc.save(outputStream);
-            pdfDoc.close();
+            PDDocument pdfDoc = null;
+            try {
+                pdfDoc = new PDDocument();
+                PDPage pdPage = generatePage(pdf, pdfDoc);
+                PDPageContentStream contentStream = drawHeader(header, pdfDoc, pdPage);
+                drawTable(pdfDoc, contentStream, pdf, table, footer);
+                pdfDoc.save(outputStream);
+            }
+            catch(Exception ex) {
+                throw ex;
+            }
+            finally {
+                if(pdfDoc != null) {
+                    pdfDoc.close();
+                }
+            }
         }
     }
 
     private PDPageContentStream drawHeader(Header header, PDDocument pdfDoc, PDPage page ) throws IOException {
+
         PDPageContentStream contentStream = drawLogo(header, pdfDoc, page);
         if(header !=null) {
             if (header.getTitle() != null) {
@@ -46,6 +58,7 @@ class PDFGenerator {
     }
 
     private PDPageContentStream drawLogo(Header header, PDDocument pdfDoc, PDPage page) throws IOException {
+
         PDPageContentStream contentStream;
         try(InputStream inputStream = this.getClass().getResourceAsStream("/logo.jpg")){
             PDXObjectImage ximage = new PDJpeg(pdfDoc, inputStream);
@@ -59,6 +72,7 @@ class PDFGenerator {
     }
 
     private void drawTitle(Header header, PDPageContentStream contentStream) throws IOException {
+
         contentStream.setFont(header.getTitleFont(), header.getTitleFontSize());
         contentStream.beginText();
         contentStream.moveTextPositionByAmount((header.getTitleCoordinates())[0],(header.getTitleCoordinates())[1]);
@@ -67,6 +81,7 @@ class PDFGenerator {
     }
 
     private void drawHeaderInfo(Header header, PDPageContentStream contentStream) throws IOException {
+
         contentStream.setFont(header.getHeaderInfoFont(), header.getHeaderInfoFontSize());
         float headerInfoHeight = header.getHeaderInfoFont().getFontBoundingBox().getHeight() / 1000 * header.getHeaderInfoFontSize();
         float nexty=header.getHeaderCoordinates()[1];
@@ -80,6 +95,7 @@ class PDFGenerator {
     }
 
     private void drawTable(PDDocument pdfDoc, PDPageContentStream contentStream, PDFPageInfo pdf, Table table, Footer footer) throws IOException {
+
         float nextY = drawTableHeader(contentStream, table);
         drawTableBody(contentStream, pdfDoc, pdf, table, nextY, footer);
     }
@@ -153,6 +169,7 @@ class PDFGenerator {
 
     //If a line overflows in a row, This method returns a list that contains the lines
     private List<String> getLinesPerRow(String text, float width, Table table, boolean IsHeader) throws IOException {
+
         List<String> lines = new ArrayList<>();
         int lastSpace = -1;
         //checks if line overflows and break them into pieces of column width
@@ -213,6 +230,7 @@ class PDFGenerator {
     }
 
     private void drawTableBody(PDPageContentStream contentStream, PDDocument pdfDoc, PDFPageInfo pdf, Table table, float nextY, Footer footer) throws IOException {
+
         int pageNo = 0;
         for(int i = 0; i < table.getContent().length; i++) {
             if(nextY < table.getMargin()) {
@@ -237,6 +255,7 @@ class PDFGenerator {
     }
 
     private void drawFooter(PDPageContentStream contentStream, Footer footer, int pageNo) throws IOException {
+
         contentStream.beginText();
         if(footer != null) {
             contentStream.moveTextPositionByAmount(footer.getFooterCoordinates()[0], footer.getFooterCoordinates()[1]);
@@ -253,6 +272,7 @@ class PDFGenerator {
     }
 
     private PDPage generatePage(PDFPageInfo pdf,PDDocument pdfDoc) {
+
         PDPage page = new PDPage();
         page.setMediaBox(pdf.getPageSize());
         pdfDoc.addPage(page);

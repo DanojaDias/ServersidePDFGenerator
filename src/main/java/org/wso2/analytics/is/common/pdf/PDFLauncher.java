@@ -10,6 +10,7 @@ import java.util.List;
 
 public class PDFLauncher {
     public static void generatePDF(String[] columns, String[][] rows, int[] columnSizes, String title, String[] headerInfo) throws IOException, COSVisitorException {
+
         File file = new File("repository/deployment/server/jaggeryapps/portal/controllers/apis/pdfSample.pdf");
         boolean fileCreated = false;
         if (!file.exists()) {
@@ -28,6 +29,7 @@ public class PDFLauncher {
     }
 
     private static Table createTable(String[] columns, String[][] rows, int[] columnSizes) {
+
         List<Column> tableColumn = new ArrayList<>();
         for(int i = 0; i < columns.length; i++) {
             tableColumn.add(new Column(columns[i], columnSizes[i]));
@@ -39,6 +41,7 @@ public class PDFLauncher {
     }
 
     private static Header createHeader(String title, String[] headerInfo) throws IOException {
+
         Header header = new Header();
         header.setTitle(title);
         header.setHeaderInfo(headerInfo);
@@ -50,6 +53,7 @@ public class PDFLauncher {
     }
 
     private static Footer createFooter(String title) throws IOException {
+
         Footer footer = new Footer();
         footer.setFooterContent(title);
         return footer;
